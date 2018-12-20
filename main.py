@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sqlite3
 import re
-import urllib.request
+from urllib.request import Request, urlopen
 
 URL_GK = "https://www.futbin.com/19/players?page=1&version=all_nif&position=GK"
 
@@ -11,29 +11,18 @@ URL_GK = "https://www.futbin.com/19/players?page=1&version=all_nif&position=GK"
 def doRequest(url):
     return urllib.request.urlopen(url).read().decode()
 
-# connect to the local database
-con = sqlite3.connect('test1.db')
+req = Request(URL_GK, headers={'User-Agent': 'Mozilla/5.0'})
+webpage = urlopen(req).read().decode()
 
-# access to columns by indexes and by name
-con.row_factory = sqlite3.Row
+player_ID = '239'
 
-# create a cursor object
-cur = con.cursor()
+def getInfo():
+    #pattern = re.compile(player_ID + r'/[\w\s]+">\s*\n\s*')
+    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>')
+    info_full = pattern.findall(webpage)
+    id = player_ID
+    name = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>', "Name: ", info_full[0])
+    name = re.sub(r'</a>', "", name)
+    print("ID: {0}\n{1}".format(id, name))
 
-""" CREATE TABLES FOR PLAYERS """
-
-# goalkeeper
-cur.execute("""
-     CREATE TABLE IF NOT EXISTS goalkeeper (
-     id INTEGER PRIMARY KEY ASC,
-     name varchar(250) NOT NULL,
-     club varchar(250) NOT NULL,
-     nation varchar(250) NOT NULL,
-     pac INTEGER NOT NULL,
-     sho INTEGER NOT NULL,
-     pas INTEGER NOT NULL,
-     dri INTEGER NOT NULL,
-     def INTEGER NOT NULL,
-     phy INTEGER NOT NULL,
-     height INTEGER NOT NULL,
-     )""")
+getInfo()
