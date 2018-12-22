@@ -174,7 +174,7 @@ cur.execute("""
  );""")
 
 # squad players list
-squad = ((None, 'gk'), (None, 'rb'), (None, 'lb'),
+squad = ((239, 'gk'), (434, 'rb'), (None, 'lb'),
          (None, 'cb_1'), (None, 'cb_2'), (None, 'cm_1'),
          (None, 'cm_2'), (None, 'lm'), (None, 'rm'), (None, 'st_1'), (None, 'st_2'))
 
@@ -233,8 +233,114 @@ def displayDetailedSquad():
         elif (player['squad_position'] == 'st_1' or player['squad_position'] == 'st_2'):
             url = URL_ST
         full_info = getInfo(player['id'], url)
-        print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
+        print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nPosition: {4}\nHeight: {5} cm\nOverall: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
+        
+# function that calculates value of a player
+def player_value(price):
+    length = len(price)
+    if price[length - 1] == 'K':
+        price = price[:(length-1)]
+        price = float(price)
+        price = price*1000
+        return price
+    elif price[length - 1] == 'M':
+        price = price[:(length-1)]
+        price = float(price)
+        price = price*1000000
+        return price
+    else:
+        price = float(price)
+        return price
 
+# function that shows stats of your time
+
+def calculateValues():
+    cur.execute('SELECT squad.id, squad.squad_position FROM squad')
+    players = cur.fetchall()
+
+    height = 0
+    overall = 0
+    price = 0
+    pace = 0    
+    shooting = 0
+    passing = 0
+    dribbling = 0
+    defending = 0
+    physicality = 0
+    counter = 0
+    
+    for player in players:
+        if (player['id'] == None):
+            #print("Niedodano zawodnika")
+            continue
+        elif (player['squad_position'] == 'gk'):
+            url = URL_GK
+            counter = counter + 1
+        elif (player['squad_position'] == 'rb'):
+            url = URL_RB
+            counter = counter + 1
+        elif (player['squad_position'] == 'lb'):
+            url = URL_LB
+            counter = counter + 1
+        elif (player['squad_position'] == 'cb_1' or player['squad_position'] == 'cb_2'):
+            url = URL_CB
+            counter = counter + 1
+        elif (player['squad_position'] == 'cm_1' or player['squad_position'] == 'cm_2'):
+            url = URL_CM
+            counter = counter + 1
+        elif (player['squad_position'] == 'lm'):
+            url = URL_LM
+            counter = counter + 1
+        elif (player['squad_position'] == 'rm'):
+            url = URL_RM
+            counter = counter + 1
+        elif (player['squad_position'] == 'st_1' or player['squad_position'] == 'st_2'):
+            url = URL_ST
+            counter = counter + 1
+        if (player['id'] != None):
+            full_info = getInfo(player['id'], url)
+            full_info[5] = int(full_info[5])
+            height = height + full_info[5]
+            full_info[6] = int(full_info[6])
+            overall = overall + full_info[6]
+            player_price = player_value(full_info[7])
+            price = price + player_price
+            full_info[8] = int(full_info[8])
+            pace = pace + full_info[8]
+            full_info[9] = int(full_info[9])
+            shooting = shooting + full_info[9]
+            full_info[10] = int(full_info[10])
+            passing = passing + full_info[10]
+            full_info[11] = int(full_info[11])
+            dribbling = dribbling + full_info[11]
+            full_info[12] = int(full_info[12])
+            defending = defending + full_info[12]
+            full_info[13] = int(full_info[13])
+            physicality = physicality + full_info[13]
+
+    if (counter != 0):
+        avg_height = height / counter
+        avg_overall = overall / counter
+        avg_price = price / counter
+        avg_pace = pace / counter
+        avg_shooting = shooting / counter
+        avg_passing = passing / counter
+        avg_dribbling = dribbling / counter
+        avg_defending = defending / counter
+        avg_physicality = physicality / counter
+        
+        print("\n")
+        print("Players in the squad: ", counter)
+        print("Total value of the squad: ", price)
+        print("Average overall: ", avg_overall)
+        print("Average price: ", avg_price)
+        print("Average height: ", avg_height, " cm")
+        print("Average pace: ", avg_pace)
+        print("Average shooting: ", avg_shooting,)
+        print("Average passing: ", avg_passing)
+        print("Average dribbling: ", avg_dribbling)
+        print("Average defending: ", avg_defending)
+        print("Average physicality: ", avg_physicality)
 
 # function that modifies player in player's squad
 def modifyPlayer(player_id, squad_position):
@@ -411,7 +517,8 @@ while(True):
         continue
 
     elif (option == '5'):
-        print("available soon")
+        calculateValues()
+        
     else:
         print("Unimplemented method")
 con.close()
