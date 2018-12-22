@@ -174,7 +174,7 @@ cur.execute("""
  );""")
 
 # squad players list
-squad = ((239, 'gk'), (434, 'rb'), (None, 'lb'),
+squad = ((None, 'gk'), (None, 'rb'), (None, 'lb'),
          (None, 'cb_1'), (None, 'cb_2'), (None, 'cm_1'),
          (None, 'cm_2'), (None, 'lm'), (None, 'rm'), (None, 'st_1'), (None, 'st_2'))
 
@@ -351,41 +351,49 @@ def modifyPlayer(player_id, squad_position):
 
 # display functions
 def displayGK():
+    id_list = []
     readData('gk', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_GK)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayRB():
+    id_list = []
     readData('rb', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_RB)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayLB():
+    id_list = []
     readData('lb', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_LB)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayCB():
+    id_list = []
     readData('cb', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_CB)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayCM():
+    id_list = []
     readData('cm', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_CM)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayLM():
+    id_list = []
     readData('lm', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_LM)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayRM():
+    id_list = []
     readData('rm', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_RM)
         print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 def displayST():
+    id_list = []
     readData('st', id_list)
     for player in id_list:
         full_info = getInfo(player, URL_ST)
