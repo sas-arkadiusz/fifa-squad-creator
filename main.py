@@ -174,7 +174,7 @@ cur.execute("""
  );""")
 
 # squad players list
-squad = (('171', 'gk'), (None, 'rb'), (None, 'lb'),
+squad = ((None, 'gk'), (None, 'rb'), (None, 'lb'),
          (None, 'cb_1'), (None, 'cb_2'), (None, 'cm_1'),
          (None, 'cm_2'), (None, 'lm'), (None, 'rm'), (None, 'st_1'), (None, 'st_2'))
 
@@ -207,6 +207,33 @@ def displaySquad():
             url = URL_ST
         full_info = getInfo(player['id'], url)
         print(full_info[4], ": ", full_info[1])
+
+# auxiliary function that detailed information about player's squad
+def displayDetailedSquad():
+    cur.execute('SELECT squad.id, squad.squad_position FROM squad')
+    players = cur.fetchall()
+    for player in players:
+        if (player['id'] == None):
+            print("Niedodano zawodnika")
+            continue
+        elif (player['squad_position'] == 'gk'):
+            url = URL_GK
+        elif (player['squad_position'] == 'rb'):
+            url = URL_RB
+        elif (player['squad_position'] == 'lb'):
+            url = URL_LB
+        elif (player['squad_position'] == 'cb_1' or player['squad_position'] == 'cb_2'):
+            url = URL_CB
+        elif (player['squad_position'] == 'cm_1' or player['squad_position'] == 'cm_2'):
+            url = URL_CM
+        elif (player['squad_position'] == 'lm'):
+            url = URL_LM
+        elif (player['squad_position'] == 'rm'):
+            url = URL_RM
+        elif (player['squad_position'] == 'st_1' or player['squad_position'] == 'st_2'):
+            url = URL_ST
+        full_info = getInfo(player['id'], url)
+        print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(full_info[0], full_info[1], full_info[2], full_info[3], full_info[4], full_info[5], full_info[6], full_info[7], full_info[8], full_info[9], full_info[10], full_info[11], full_info[12], full_info[13]))
 
 
 # function that modifies player in player's squad
@@ -264,13 +291,21 @@ def displayST():
 id_list = []
 
 while(True):
-    option = input("\nWhat do you want to do? \n\t1. Show my squad\n\t2. Show details of my players\n\t3. Modify my squad\n\t4. Display players \nOption: ")
+    option = input("\nWhat do you want to do? \n\t1. Show my squad\n\t2. Show details of my players\n\t3. Modify my squad\n\t4. Display players \n\t5. Display club info\nOption: ")
 
     if (option == '1'):
+        print("\n")
         displaySquad()
+        print("\n")
         continue
 
-    if (option == '3'):
+    elif (option == '2'):
+        print("\n")
+        displayDetailedSquad()
+        print("\n")
+        continue
+
+    elif (option == '3'):
         player_modify = input("Which position do you want to modify?\n\t1. GK\n\t2. RB\n\t3. LB\n\t4. CB_1\n\t5. CB_2\n\t6. CM_1\n\t7. CM_2\n\t8. LM\n\t9. RM\n\t10. ST_1\n\t11. ST_2\nPosition: ")
         print("\n")
         if (player_modify == 'GK' or player_modify == 'gk' or player_modify == '1'):
@@ -350,9 +385,10 @@ while(True):
             player_modify = input("Type new player's ID: ")
             modifyPlayer(player_modify, 'st_2')
             con.commit()
+        print("\n")
         continue
 
-    if (option == '4'):
+    elif (option == '4'):
         player_position = input("Which position do you want to display? \n\t1. GK\n\t2. RB\n\t3. LB\n\t4. CB\n\t5. CM\n\t6. LM\n\t7. RM\n\t8. ST\nPosition: ")
         print("\n")
         if (player_position == 'GK' or player_position == 'gk' or player_position == '1'):
@@ -371,6 +407,11 @@ while(True):
             displayRM()
         elif (player_position == 'ST' or player_position == 'st' or player_position == '8'):
             displayST()
+        print("\n")
         continue
-        
+
+    elif (option == '5'):
+        print("available soon")
+    else:
+        print("Unimplemented method")
 con.close()
