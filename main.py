@@ -174,9 +174,9 @@ cur.execute("""
  );""")
 
 # squad players list
-squad = (('239', 'gk'), ('434', 'rb'), ('489', 'lb'),
-         ('421', 'cb_1'), ('427', 'cb_2'), ('291', 'cm_1'),
-         ('592', 'cm_2'), ('720', 'lm'), ('308', 'rm'), ('418', 'st_1'), ('143', 'st_2'))
+squad = (('171', 'gk'), (None, 'rb'), (None, 'lb'),
+         (None, 'cb_1'), (None, 'cb_2'), (None, 'cm_1'),
+         (None, 'cm_2'), (None, 'lm'), (None, 'rm'), (None, 'st_1'), (None, 'st_2'))
 
 # execute many records
 cur.executemany('INSERT INTO squad VALUES(?,?)', squad)
@@ -186,7 +186,10 @@ def displaySquad():
     cur.execute('SELECT squad.id, squad.squad_position FROM squad')
     players = cur.fetchall()
     for player in players:
-        if (player['squad_position'] == 'gk'):
+        if (player['id'] == None):
+            print("Niedodano zawodnika")
+            continue
+        elif (player['squad_position'] == 'gk'):
             url = URL_GK
         elif (player['squad_position'] == 'rb'):
             url = URL_RB
@@ -204,6 +207,12 @@ def displaySquad():
             url = URL_ST
         full_info = getInfo(player['id'], url)
         print(full_info[4], ": ", full_info[1])
+
+
+# function that modifies player in player's squad
+def modifyPlayer(player_id, squad_position):
+    cur.execute("UPDATE squad SET id = (?) WHERE squad_position = (?)", (player_id, squad_position))
+
 
 # USER PART
 
@@ -255,10 +264,92 @@ def displayST():
 id_list = []
 
 while(True):
-    option = input("\nWhat do you want to do? \n\t1. Show my squad\n\t2. Modify my squad\n\t3. Display players \nOption: ")
+    option = input("\nWhat do you want to do? \n\t1. Show my squad\n\t2. Show details of my players\n\t3. Modify my squad\n\t4. Display players \nOption: ")
 
     if (option == '1'):
         displaySquad()
+        continue
+
+    if (option == '3'):
+        player_modify = input("Which position do you want to modify?\n\t1. GK\n\t2. RB\n\t3. LB\n\t4. CB_1\n\t5. CB_2\n\t6. CM_1\n\t7. CM_2\n\t8. LM\n\t9. RM\n\t10. ST_1\n\t11. ST_2\nPosition: ")
+        print("\n")
+        if (player_modify == 'GK' or player_modify == 'gk' or player_modify == '1'):
+            display = input("Do you want do display all GKs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayGK()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'gk')
+            con.commit()
+        if (player_modify == 'RB' or player_modify == 'rb' or player_modify == '2'):
+            display = input("Do you want do display all RBs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayRB()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'rb')
+            con.commit()
+        if (player_modify == 'LB' or player_modify == 'lb' or player_modify == '3'):
+            display = input("Do you want do display all LBs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayLB()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'lb')
+            con.commit()
+        if (player_modify == 'CB_1' or player_modify == 'cb_1' or player_modify == '4'):
+            display = input("Do you want do display all CBs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayCB()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'cb_1')
+            con.commit()
+        if (player_modify == 'CB_2' or player_modify == 'cb_2' or player_modify == '5'):
+            display = input("Do you want do display all CBs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayCB()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'cb_2')
+            con.commit()
+        if (player_modify == 'CM_1' or player_modify == 'cm_1' or player_modify == '6'):
+            display = input("Do you want do display all CMs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayCM()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'cm_1')
+            con.commit()
+        if (player_modify == 'CM_2' or player_modify == 'cm_2' or player_modify == '7'):
+            display = input("Do you want do display all CMs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayCM()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'cm_2')
+            con.commit()
+        if (player_modify == 'LM' or player_modify == 'lm' or player_modify == '8'):
+            display = input("Do you want do display all LMs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayLM()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'lm')
+            con.commit()
+        if (player_modify == 'RM' or player_modify == 'rm' or player_modify == '9'):
+            display = input("Do you want do display all RBs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayRM()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'rm')
+            con.commit()
+        if (player_modify == 'ST_1' or player_modify == 'st_1' or player_modify == '10'):
+            display = input("Do you want do display all STs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayST()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'st_1')
+            con.commit()
+        if (player_modify == 'ST_2' or player_modify == 'st_2' or player_modify == '11'):
+            display = input("Do you want do display all STs? Y/N: ")
+            if (display == 'Y' or display == 'y'):
+                displayST()
+            player_modify = input("Type new player's ID: ")
+            modifyPlayer(player_modify, 'st_2')
+            con.commit()
         continue
 
     if (option == '4'):
