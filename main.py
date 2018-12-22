@@ -93,7 +93,7 @@ def getInfo(player_ID, URL):
     height = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td>', "", info_full[0])
     
     #print(info_full)
-    print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}".format(id, name, club, nation, height, overall, position, price, pace, shooting, passing, dribbling, defending, physicality))
+    print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}\n".format(id, name, club, nation, height, overall, position, price, pace, shooting, passing, dribbling, defending, physicality))
 
     # return part
     dane = [id, name, club, nation, height, overall, pace, shooting, passing, dribbling, defending, physicality]
@@ -168,17 +168,47 @@ def readData(position, id_list):
 
 # USER PART
 
-
 id_list = []
 
-readData('st', id_list)
-print(id_list)
+while(True):
+    option = input("\nWhat do you want to do? \n\t1. Show my squad\n\t2. Modify my squad\n\t3. Display players \nOption: ")
 
-for player in id_list:
-    getInfo(player, URL_ST)
-    print("\n\n")
-
-
+    if (option == '3'):
+        player_position = input("Which position do you want to display? \n\t1. GK\n\t2. RB\n\t3. LB\n\t4. CB\n\t5. CM\n\t6. LM\n\t7. RM\n\t8. ST\nPosition: ")
+        if (player_position == 'GK' or player_position == 'gk' or player_position == '1'):
+            readData('gk', id_list)
+            for player in id_list:
+                getInfo(player, URL_GK)
+        elif (player_position == 'RB' or player_position == 'rb' or player_position == '2'):
+            readData('rb', id_list)
+            for player in id_list:
+                getInfo(player, URL_RB)
+        elif (player_position == 'LB' or player_position == 'lb' or player_position == '3'):
+            readData('lb', id_list)
+            for player in id_list:
+                getInfo(player, URL_LB)
+        elif (player_position == 'CB' or player_position == 'cb' or player_position == '4'):
+            readData('cb', id_list)
+            for player in id_list:
+                getInfo(player, URL_CB)
+        elif (player_position == 'CM' or player_position == 'cm' or player_position == '5'):
+            readData('cm', id_list)
+            for player in id_list:
+                getInfo(player, URL_CM)
+        elif (player_position == 'LM' or player_position == 'lm' or player_position == '6'):
+            readData('lm', id_list)
+            for player in id_list:
+                getInfo(player, URL_LM)
+        elif (player_position == 'RM' or player_position == 'rm' or player_position == '7'):
+            readData('rm', id_list)
+            for player in id_list:
+                getInfo(player, URL_RM)
+        elif (player_position == 'ST' or player_position == 'st' or player_position == '8'):
+            readData('st', id_list)
+            for player in id_list:
+                getInfo(player, URL_ST)
+        continue
+        
 con.close()
 
 
