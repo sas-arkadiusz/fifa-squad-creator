@@ -48,12 +48,22 @@ def getInfo(player_ID):
     pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/]+bold">[\d\.]+\w{1}')
     info_full = pattern.findall(webpage)
     price = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/]+bold">', "", info_full[0])
+
+    # pattern for pace stats
+    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}')
+    info_full = pattern.findall(webpage)
+    pace = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>', "", info_full[0])
+
+    # pattern for shooting stats
+    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+p-2 [\w\-\">]+>\d{2}')
+    info_full = pattern.findall(webpage)
+    shooting = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+p-2 [\w\-\">]+>', "", info_full[0])
     
     # print part
     passing = 0
     #print(info_full)
     height = 0
-    print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}".format(id, name, club, nation, height, overall, position, price, ))
+    print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}".format(id, name, club, nation, height, overall, position, price, pace, shooting))
 
     # return part
     dane = [id, name, club, nation, overall]
