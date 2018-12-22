@@ -168,6 +168,40 @@ def readData(position, id_list):
 
 # USER PART
 
+# display functions
+def displayGK():
+    readData('gk', id_list)
+    for player in id_list:
+        getInfo(player, URL_GK)
+def displayRB():
+    readData('rb', id_list)
+    for player in id_list:
+        getInfo(player, URL_RB)
+def displayLB():
+    readData('lb', id_list)
+    for player in id_list:
+        getInfo(player, URL_LB)
+def displayCB():
+    readData('cb', id_list)
+    for player in id_list:
+        getInfo(player, URL_CB)
+def displayCM():
+    readData('cm', id_list)
+    for player in id_list:
+        getInfo(player, URL_CM)
+def displayLM():
+    readData('lm', id_list)
+    for player in id_list:
+        getInfo(player, URL_LM)
+def displayRM():
+    readData('rm', id_list)
+    for player in id_list:
+        getInfo(player, URL_RM)
+def displayST():
+    readData('st', id_list)
+    for player in id_list:
+        getInfo(player, URL_ST)
+
 id_list = []
 
 while(True):
@@ -176,37 +210,21 @@ while(True):
     if (option == '3'):
         player_position = input("Which position do you want to display? \n\t1. GK\n\t2. RB\n\t3. LB\n\t4. CB\n\t5. CM\n\t6. LM\n\t7. RM\n\t8. ST\nPosition: ")
         if (player_position == 'GK' or player_position == 'gk' or player_position == '1'):
-            readData('gk', id_list)
-            for player in id_list:
-                getInfo(player, URL_GK)
+            displayGK()
         elif (player_position == 'RB' or player_position == 'rb' or player_position == '2'):
-            readData('rb', id_list)
-            for player in id_list:
-                getInfo(player, URL_RB)
+            displayRB()
         elif (player_position == 'LB' or player_position == 'lb' or player_position == '3'):
-            readData('lb', id_list)
-            for player in id_list:
-                getInfo(player, URL_LB)
+            displayLB()
         elif (player_position == 'CB' or player_position == 'cb' or player_position == '4'):
-            readData('cb', id_list)
-            for player in id_list:
-                getInfo(player, URL_CB)
+            displayCB()
         elif (player_position == 'CM' or player_position == 'cm' or player_position == '5'):
-            readData('cm', id_list)
-            for player in id_list:
-                getInfo(player, URL_CM)
+            displayCM()
         elif (player_position == 'LM' or player_position == 'lm' or player_position == '6'):
-            readData('lm', id_list)
-            for player in id_list:
-                getInfo(player, URL_LM)
+            displayLM()
         elif (player_position == 'RM' or player_position == 'rm' or player_position == '7'):
-            readData('rm', id_list)
-            for player in id_list:
-                getInfo(player, URL_RM)
+            displayRM()
         elif (player_position == 'ST' or player_position == 'st' or player_position == '8'):
-            readData('st', id_list)
-            for player in id_list:
-                getInfo(player, URL_ST)
+            displayST()
         continue
         
 con.close()
