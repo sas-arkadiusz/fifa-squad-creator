@@ -374,7 +374,3 @@ while(True):
         continue
         
 con.close()
-
-
-
-
