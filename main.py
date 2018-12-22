@@ -6,84 +6,92 @@ import re
 from urllib.request import Request, urlopen
 
 URL_GK = "https://www.futbin.com/19/players?page=1&version=all_nif&position=GK"
+URL_RB = "https://www.futbin.com/19/players?page=1&position=RB,RWB&version=all_nif"
+URL_LB = "https://www.futbin.com/19/players?page=1&version=all_nif&position=LB,LWB"
+URL_CB = "https://www.futbin.com/19/players?page=1&version=all_nif&position=CB"
+URL_CM = "https://www.futbin.com/19/players?page=1&version=all_nif&position=CDM,CM,CAM"
+URL_LM = "https://www.futbin.com/19/players?page=1&version=all_nif&position=LM,LW,LF"
+URL_RM = "https://www.futbin.com/19/players?page=1&version=all_nif&position=RM,RW,RF"
+URL_ST = "https://www.futbin.com/19/players?page=1&position=CF,ST&version=all_nif"
 
 # auxiliary function that retrieves the code of a given page
 def doRequest(url):
     return urllib.request.urlopen(url).read().decode()
 
-req = Request(URL_GK, headers={'User-Agent': 'Mozilla/5.0'})
-webpage = urlopen(req).read().decode()
 
 # auxiliary function that returns player info
-def getInfo(player_ID):
+def getInfo(player_ID, URL):
+
+    req = Request(URL, headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req).read().decode()
 
     id = player_ID    
 
     # pattern for name
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+')
     info_full = pattern.findall(webpage)
-    name = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>', "", info_full[0])
+    name = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>', "", info_full[0])
 
     # pattern for club
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\w\s]+')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+')
     info_full = pattern.findall(webpage)
-    club = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="', "", info_full[0])
+    club = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="', "", info_full[0])
 
     # pattern for nation
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\<>=?&\/\.\-"]+title="[\w\s]+')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+')
     info_full = pattern.findall(webpage)
-    nation = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\<>=?&\/\.\-"]+title="', "", info_full[0])
+    nation = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="', "", info_full[0])
 
     # pattern for overall
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}')
     info_full = pattern.findall(webpage)
-    overall = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">', "", info_full[0])
+    overall = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">', "", info_full[0])
 
     # pattern for position
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*<td class="">\w{2,3}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}')
     info_full = pattern.findall(webpage)
-    position = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*<td class="">', "", info_full[0])
+    position = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">', "", info_full[0])
 
     # pattern for price
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/]+bold">[\d\.]+\w{1}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}')
     info_full = pattern.findall(webpage)
-    price = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/]+bold">', "", info_full[0])
+    price = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">', "", info_full[0])
 
     # pattern for pace stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    pace = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>', "", info_full[0])
+    pace = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>', "", info_full[0])
 
     # pattern for shooting stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+p-2 [\w\-\">]+>\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    shooting = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+p-2 [\w\-\">]+>', "", info_full[0])
+    shooting = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>', "", info_full[0])
 
-    # pattern for passing stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}')
+    #pattern for passing stats
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    passing = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>', "", info_full[0])
+    passing = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>', "", info_full[0])
 
     # pattern for dribbling stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    dribbling = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>', "", info_full[0])
+    dribbling = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>', "", info_full[0])
 
     # pattern for defending stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    defending = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>', "", info_full[0])
+    defending = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>', "", info_full[0])
 
     # pattern for physicality stats
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}')
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}')
     info_full = pattern.findall(webpage)
-    physicality = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>', "", info_full[0])
-    
-    # pattern for height
-    pattern = re.compile(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\<>/]+\r\n\s*<td>\d{3}')
-    info_full = pattern.findall(webpage)
-    height = re.sub(player_ID + r'/[\w\s]+" [\w\=\_\"]+>[\w\s]+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=";:&?\/\-\w\s]+title="[\s\w\-\"=<>:;\/\.]+\r\n\s*[\w\d\s\="?&\-\/]+[\w\s\d\:;<>=?&\/\.\-"]+form rating ut19[\s\w]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\="<>/]+\r\n\s*[\w\s\-="<>/.:;\\]+bold">[\d\.]+\w{1}[\w\s\<="-/>]+\r\n\s*[\w\d\s\<>="-:;/]+\r\n\s*[\w\d\s\<>=":;/\\\-]+M</span></td>\r\n\s*[\w\d\s\<>="_\-]+>\d{2}[\w\<>/]+\r\n\s*[\w\s\="_<>\-]+[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\/<>]+\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}</span></td>\r\n\s*[\w\s\<>="_\-]+ p-2 [\w\-"]+>\d{2}[\w\<>/]+\r\n\s*<td>', "", info_full[0])
+    physicality = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>', "", info_full[0])
 
+    # pattern for height
+    pattern = re.compile(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td>\d{3}')
+    info_full = pattern.findall(webpage)
+    height = re.sub(player_ID + r'/[\w\s\.\']+" [\w\=\_\"\.]+>[\w\s\']+</a>\r\n\s*[\<>/\w]+\r\n\s*\r\n\s*<div>\r\n\s*[\<>=_";:&?\/\-\,\w\s]+title="[\w\s\-]+"[\w\s\-\"<>:;=\/\.]+\r\n\s*[\w\s\=<>"?&_\/\-\,]+title="[\w]+[\w\s\-\="><:;\/\.]+\r\n\s*[\w\s\=_"?&><:;\/\.\,\-]+\r\n\s*</span>\r\n\s*</div>\r\n\s*</div>\r\n\s*</td>\r\n\s*[\w\s\<>="]+">\d{2}[\w\<>/]+\r\n\s*[\w\s\<="]+">\w{2,3}</td>\r\n\s*[\w\s\<="->]+</td>\r\n\s*[\w\s\<>="_-]+">[\d\.]+\w{1}[\w\s\<="_>/\.\-]+\r\n\s*<td>\d{1}[\w\s\<>=:;/"\-]+\r\n\s*<td>\d{1}[\w\s\=":;<>/\-\\]+>[H,L,M]{1}</span></td>\r\n\s*<td><[\w\s\="\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td><[\w\s\=_"\-]+>\d{2}</span></td>\r\n\s*<td>', "", info_full[0])
+    
     #print(info_full)
     print("ID: {0}\nName: {1}\nClub: {2}\nNation: {3}\nHeight: {4} cm\nOverall: {5}\nPosition: {6}\nPrice: {7}\n\nSTATS:\nPace: {8}\nShooting: {9}\nPassing: {10}\nDribbling: {11}\nDefending: {12}\nPhysicality: {13}".format(id, name, club, nation, height, overall, position, price, pace, shooting, passing, dribbling, defending, physicality))
 
@@ -111,7 +119,22 @@ cur.execute("""
 # players IDs list
 players = (
  ('239', 'gk'), ('420', 'gk'), ('595', 'gk'), ('895', 'gk'), ('515', 'gk'), ('853', 'gk'), ('1320', 'gk'), ('606', 'gk'), ('302', 'gk'), ('471', 'gk'),
- ('169', 'gk'), ('171', 'gk'), ('567', 'gk'), ('1022', 'gk'), ('1098', 'gk'), ('1413', 'gk'), ('1683', 'gk'), ('1746', 'gk'), ('3135', 'gk'), ('394', 'gk'),
+ ('169', 'gk'), ('171', 'gk'), ('567', 'gk'), ('1022', 'gk'), ('1098', 'gk'),
+ ('434', 'rb'), ('317', 'rb'), ('361', 'rb'), ('614', 'rb'), ('259', 'rb'), ('532', 'rb'), ('817', 'rb'), ('869', 'rb'), ('871', 'rb'), ('1025', 'rb'),
+ ('177', 'rb'), ('201', 'rb'), ('741', 'rb'), ('1337', 'rb'), ('1417', 'rb'),
+ ('603', 'lb'),  ('356', 'lb'),  ('155', 'lb'), ('437', 'lb'), ('905', 'lb'), ('771', 'lb'), ('395', 'lb'), ('822', 'lb'), ('920', 'lb'), ('323', 'lb'),
+ ('489', 'lb'), ('539', 'lb'), ('740', 'lb'), ('1166', 'lb'), ('2571', 'lb'),
+ ('594', 'cb'), ('894', 'cb'), ('146', 'cb'), ('421', 'cb'), ('852', 'cb'), ('355', 'cb'), ('357', 'cb'), ('517', 'cb'), ('724', 'cb'), ('157', 'cb'),
+ ('158', 'cb'), ('306', 'cb'), ('387', 'cb'), ('427', 'cb'), ('609', 'cb'),
+ ('291', 'cm'), ('592', 'cm'), ('596', 'cm'), ('147', 'cm'), ('295', 'cm'), ('386', 'cm'), ('598', 'cm'), ('242', 'cm'), ('353', 'cm'), ('423', 'cm'),
+ ('514', 'cm'), ('605', 'cm'), ('354', 'cm'), ('725', 'cm'), ('6419', 'cm'),
+ ('846', 'lm'), ('385', 'lm'), ('351', 'lm'), ('720', 'lm'), ('154', 'lm'), ('305', 'lm'), ('466', 'lm'), ('1326', 'lm'), ('189', 'lm'), ('436', 'lm'),
+ ('611', 'lm'), ('767', 'lm'), ('903', 'lm'), ('525', 'lm'), ('254', 'lm'),
+ ('461', 'rm'), ('602', 'rm'), ('854', 'rm'), ('308', 'rm'), ('310', 'rm'), ('435', 'rm'), ('1650', 'rm'), ('170', 'rm'), ('314', 'rm'), ('390', 'rm'),
+ ('729', 'rm'), ('860', 'rm'), ('1366', 'rm'), ('1988', 'rm'), ('256', 'rm'),
+ ('143', 'st'), ('341', 'st'), ('343', 'st'), ('418', 'st'), ('294', 'st'), ('512', 'st'), ('849', 'st'), ('896', 'st'), ('664', 'st'), ('464', 'st'),
+ ('806', 'st'), ('723', 'st'), ('932', 'st'), ('1322', 'st'), ('430', 'st'), 
+ 
 )
 
 # execute many records
@@ -121,7 +144,23 @@ con.commit()
 
 # auxiliary function that returns player IDs (by derived position)
 def readData(position, id_list):
-    cur.execute('SELECT player.id FROM player WHERE player.position = position')
+    if position == 'gk':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "gk"')
+    if position == 'rb':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "rb"')
+    if position == 'lb':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "lb"')
+    if position == 'cb':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "cb"')
+    if position == 'cm':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "cm"')
+    if position == 'lm':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "lm"')
+    if position == 'rm':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "rm"')
+    if position == 'st':
+        cur.execute('SELECT player.id FROM player WHERE player.position = "st"')
+        
     players = cur.fetchall()
     for player in players:
         id_list.append(player['id'])
@@ -132,11 +171,11 @@ def readData(position, id_list):
 
 id_list = []
 
-readData('gk', id_list)
-#print(id_list)
+readData('st', id_list)
+print(id_list)
 
 for player in id_list:
-    getInfo(player)
+    getInfo(player, URL_ST)
     print("\n\n")
 
 
